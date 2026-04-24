@@ -8,80 +8,100 @@
 <style>
 body {
   margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background: #0a0a0a;
+  font-family: Arial, sans-serif;
+  background: #0b0b0b;
   color: white;
 }
 
-nav {
+/* TOP BAR */
+.header {
+  padding: 20px;
+  background: #000;
   display: flex;
   justify-content: space-between;
-  padding: 15px 20px;
-  background: black;
-  position: sticky;
-  top: 0;
+  align-items: center;
 }
 
-nav h2 {
+.header h2 {
   color: gold;
+  margin: 0;
 }
 
-nav a {
-  color: white;
-  text-decoration: none;
-  margin-left: 15px;
-}
-
+/* HERO */
 .hero {
+  padding: 60px 20px;
   text-align: center;
-  padding: 100px 20px;
-  background: radial-gradient(circle, #111, #000);
+  background: radial-gradient(circle, #1a1a1a, #000);
 }
 
 .hero h1 {
-  font-size: 45px;
+  font-size: 40px;
+  margin-bottom: 10px;
 }
 
 .hero p {
   color: #bbb;
 }
 
-.button {
-  background: gold;
-  color: black;
-  padding: 12px 25px;
-  border-radius: 5px;
-  text-decoration: none;
-  display: inline-block;
-  margin-top: 15px;
-}
-
+/* PLAYLIST */
 .section {
-  padding: 50px 20px;
-  text-align: center;
-}
-
-.cards {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 20px;
-}
-
-.card {
-  background: #111;
   padding: 20px;
+}
+
+.track {
+  background: #151515;
+  margin: 10px 0;
+  padding: 15px;
   border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.track:hover {
+  background: #222;
+}
+
+.track h3 {
+  margin: 0;
+  font-size: 16px;
+  color: white;
+}
+
+.play-btn {
+  background: gold;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* PLAYER BAR */
+.player {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #000;
+  padding: 15px;
+  border-top: 1px solid #222;
+}
+
+.player-title {
+  font-size: 14px;
+  margin-bottom: 8px;
+  color: #ccc;
 }
 
 audio {
   width: 100%;
-  margin-top: 10px;
 }
 
+/* FOOTER */
 footer {
   text-align: center;
   padding: 20px;
-  background: black;
   color: #777;
 }
 </style>
@@ -89,60 +109,49 @@ footer {
 
 <body>
 
-<nav>
+<div class="header">
   <h2>🎷 Deo Sax</h2>
-  <div>
-    <a href="#music">Music</a>
-    <a href="#about">About</a>
-    <a href="#contact">Contact</a>
-  </div>
-</nav>
+</div>
 
 <div class="hero">
   <h1>Deo Sax Studio</h1>
-  <p>Afro Gospel Sax • Worship • Inspiration</p>
-  <a href="#music" class="button">Listen Now</a>
+  <p>Afro Gospel • Worship • Sax Experience</p>
 </div>
 
-<div class="section" id="music">
-  <h2>🎵 My Music</h2>
+<div class="section">
+  <h2>🎵 Playlist</h2>
 
-  <div class="cards">
-
-    <div class="card">
-  <h3>Praise God</h3>
-  <audio controls>
-    <source src="praise-God.mp3" type="audio/mpeg">
-  </audio>
-</div>
-
-<div class="card">
-  <h3>Baba Na You</h3>
-  <audio controls>
-    <source src="baba-na-you.mp3" type="audio/mpeg">
-  </audio>
-</div>
-
+  <div class="track" onclick="playSong('praise-god.mp3','Praise God')">
+    <h3>Praise God</h3>
+    <button class="play-btn">Play</button>
   </div>
+
+  <div class="track" onclick="playSong('baba-na-you.mp3','Baba Na You')">
+    <h3>Baba Na You</h3>
+    <button class="play-btn">Play</button>
+  </div>
+
 </div>
 
-<div class="section" id="about">
-  <h2>About Me</h2>
-  <p>
-    I am Deo Sax, an Afro Gospel saxophonist creating powerful spiritual sounds 
-    that connect people to God through music.
-  </p>
-</div>
-
-<div class="section" id="contact">
-  <h2>Bookings & Contact</h2>
-  <p>Available for concerts, church ministrations, and collaborations.</p>
-  <a href="#" class="button">Message Me</a>
+<div class="player">
+  <div class="player-title" id="nowPlaying">Now Playing: None</div>
+  <audio id="audioPlayer" controls></audio>
 </div>
 
 <footer>
-  <p>© 2026 Deo Sax Studio | Built for greatness 🎷</p>
+  © 2026 Deo Sax Studio
 </footer>
+
+<script>
+function playSong(file, title) {
+  const player = document.getElementById("audioPlayer");
+  const nowPlaying = document.getElementById("nowPlaying");
+
+  player.src = file;
+  player.play();
+  nowPlaying.innerText = "Now Playing: " + title;
+}
+</script>
 
 </body>
 </html>
