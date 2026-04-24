@@ -3,152 +3,139 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Deo Sax Studio - Stream</title>
+<title>Deo Sax Studio - Music Platform</title>
 
 <style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #0a0a0a;
-  color: white;
+body{
+  margin:0;
+  font-family:Arial;
+  background:#0a0a0a;
+  color:white;
 }
 
-/* HEADER */
-.header {
-  padding: 15px 20px;
-  background: #000;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+/* TOP BAR */
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:15px;
+  background:black;
+  position:sticky;
+  top:0;
 }
 
-.header h2 {
-  color: gold;
-  margin: 0;
+.logo{
+  color:gold;
+  font-weight:bold;
 }
 
-/* HERO */
-.hero {
-  padding: 50px 20px;
-  text-align: center;
-  background: radial-gradient(circle, #1a1a1a, #000);
+/* SEARCH */
+.search{
+  padding:10px;
+  width:90%;
+  margin:10px auto;
+  display:block;
+  border-radius:8px;
+  border:none;
 }
 
-.hero h1 {
-  font-size: 38px;
+/* SECTIONS */
+.section{
+  padding:15px;
 }
 
-.hero p {
-  color: #aaa;
+h2{
+  color:gold;
+  font-size:18px;
 }
 
-/* PLAYLIST */
-.section {
-  padding: 20px;
+/* CARDS */
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
 }
 
-.track {
-  background: #151515;
-  padding: 15px;
-  margin: 10px 0;
-  border-radius: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.card{
+  background:#151515;
+  padding:12px;
+  border-radius:10px;
+  cursor:pointer;
 }
 
-.track:hover {
-  background: #222;
+.card:hover{
+  background:#222;
 }
 
-.track button {
-  background: gold;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 5px;
-  cursor: pointer;
+/* PLAYER */
+.player{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:#000;
+  border-top:1px solid #222;
+  padding:10px;
 }
 
-/* PLAYER BAR */
-.player {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: #000;
-  border-top: 1px solid #222;
-  padding: 10px 15px;
+.now{
+  font-size:13px;
+  color:#bbb;
 }
 
-.now {
-  font-size: 13px;
-  color: #bbb;
-  margin-bottom: 5px;
+audio{
+  width:100%;
 }
 
-.controls {
-  display: flex;
-  gap: 10px;
-  margin-top: 8px;
-}
-
-.controls button {
-  background: #222;
-  color: white;
-  border: none;
-  padding: 6px 10px;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.controls button:hover {
-  background: #333;
-}
-
-audio {
-  width: 100%;
+/* BUTTONS */
+.btn{
+  background:gold;
+  border:none;
+  padding:8px;
+  border-radius:6px;
+  cursor:pointer;
+  margin-top:5px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="header">
-  <h2>🎷 Deo Sax Stream</h2>
+<div class="topbar">
+  <div class="logo">🎷 Deo Sax Platform</div>
 </div>
 
-<div class="hero">
-  <h1>Deo Sax Studio</h1>
-  <p>Afro Gospel Streaming Experience</p>
+<input class="search" placeholder="Search music..." onkeyup="searchMusic(this.value)">
+
+<div class="section">
+  <h2>🔥 Afro Gospel</h2>
+  <div class="grid" id="afro">
+
+    <div class="card" onclick="playSong(0)">
+      <b>Praise God</b><br>
+      <button class="btn">Play</button>
+    </div>
+
+    <div class="card" onclick="playSong(1)">
+      <b>Baba Na You</b><br>
+      <button class="btn">Play</button>
+    </div>
+
+  </div>
 </div>
 
 <div class="section">
-
-  <div class="track">
-    <span>Praise God</span>
-    <button onclick="playSong(0)">Play</button>
+  <h2>🎧 Worship Collection</h2>
+  <div class="grid">
+    <div class="card">Coming soon</div>
+    <div class="card">Coming soon</div>
   </div>
-
-  <div class="track">
-    <span>Baba Na You</span>
-    <button onclick="playSong(1)">Play</button>
-  </div>
-
 </div>
 
 <!-- PLAYER -->
 <div class="player">
-  <div class="now" id="nowPlaying">Now Playing: None</div>
-
-  <audio id="audio"></audio>
-
-  <div class="controls">
-    <button onclick="prevSong()">⏮</button>
-    <button onclick="togglePlay()">⏯</button>
-    <button onclick="nextSong()">⏭</button>
-    <button onclick="toggleShuffle()">🔀</button>
-    <button onclick="toggleRepeat()">🔁</button>
-  </div>
+  <div class="now" id="now">Now Playing: None</div>
+  <audio id="audio" controls></audio>
 </div>
 
 <script>
@@ -158,57 +145,30 @@ const songs = [
 ];
 
 let current = 0;
-let shuffle = false;
-let repeat = false;
 
 const audio = document.getElementById("audio");
-const nowPlaying = document.getElementById("nowPlaying");
+const now = document.getElementById("now");
 
-function playSong(index){
-  current = index;
-  audio.src = songs[current].file;
+function playSong(i){
+  current = i;
+  audio.src = songs[i].file;
   audio.play();
-  nowPlaying.innerText = "Now Playing: " + songs[current].title;
+  now.innerText = "Now Playing: " + songs[i].title;
 }
 
-function nextSong(){
-  if(shuffle){
-    current = Math.floor(Math.random() * songs.length);
-  } else {
-    current = (current + 1) % songs.length;
-  }
+function searchMusic(value){
+  let cards = document.querySelectorAll(".card");
+  value = value.toLowerCase();
+
+  cards.forEach(card=>{
+    let text = card.innerText.toLowerCase();
+    card.style.display = text.includes(value) ? "block":"none";
+  });
+}
+
+audio.addEventListener("ended", ()=>{
+  current = (current + 1) % songs.length;
   playSong(current);
-}
-
-function prevSong(){
-  current = (current - 1 + songs.length) % songs.length;
-  playSong(current);
-}
-
-function togglePlay(){
-  if(audio.paused){
-    audio.play();
-  } else {
-    audio.pause();
-  }
-}
-
-function toggleShuffle(){
-  shuffle = !shuffle;
-  alert("Shuffle: " + shuffle);
-}
-
-function toggleRepeat(){
-  repeat = !repeat;
-  alert("Repeat: " + repeat);
-}
-
-audio.addEventListener("ended", () => {
-  if(repeat){
-    audio.play();
-  } else {
-    nextSong();
-  }
 });
 </script>
 
