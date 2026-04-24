@@ -3,19 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Deo Sax Studio</title>
+<title>Deo Sax Studio - Stream</title>
 
 <style>
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: #0b0b0b;
+  background: #0a0a0a;
   color: white;
 }
 
-/* TOP BAR */
+/* HEADER */
 .header {
-  padding: 20px;
+  padding: 15px 20px;
   background: #000;
   display: flex;
   justify-content: space-between;
@@ -29,18 +29,17 @@ body {
 
 /* HERO */
 .hero {
-  padding: 60px 20px;
+  padding: 50px 20px;
   text-align: center;
   background: radial-gradient(circle, #1a1a1a, #000);
 }
 
 .hero h1 {
-  font-size: 40px;
-  margin-bottom: 10px;
+  font-size: 38px;
 }
 
 .hero p {
-  color: #bbb;
+  color: #aaa;
 }
 
 /* PLAYLIST */
@@ -50,26 +49,19 @@ body {
 
 .track {
   background: #151515;
-  margin: 10px 0;
   padding: 15px;
+  margin: 10px 0;
   border-radius: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  cursor: pointer;
 }
 
 .track:hover {
   background: #222;
 }
 
-.track h3 {
-  margin: 0;
-  font-size: 16px;
-  color: white;
-}
-
-.play-btn {
+.track button {
   background: gold;
   border: none;
   padding: 8px 12px;
@@ -84,25 +76,37 @@ body {
   left: 0;
   right: 0;
   background: #000;
-  padding: 15px;
   border-top: 1px solid #222;
+  padding: 10px 15px;
 }
 
-.player-title {
-  font-size: 14px;
-  margin-bottom: 8px;
-  color: #ccc;
+.now {
+  font-size: 13px;
+  color: #bbb;
+  margin-bottom: 5px;
+}
+
+.controls {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.controls button {
+  background: #222;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.controls button:hover {
+  background: #333;
 }
 
 audio {
   width: 100%;
-}
-
-/* FOOTER */
-footer {
-  text-align: center;
-  padding: 20px;
-  color: #777;
 }
 </style>
 </head>
@@ -110,47 +114,102 @@ footer {
 <body>
 
 <div class="header">
-  <h2>🎷 Deo Sax</h2>
+  <h2>🎷 Deo Sax Stream</h2>
 </div>
 
 <div class="hero">
   <h1>Deo Sax Studio</h1>
-  <p>Afro Gospel • Worship • Sax Experience</p>
+  <p>Afro Gospel Streaming Experience</p>
 </div>
 
 <div class="section">
-  <h2>🎵 Playlist</h2>
 
-  <div class="track" onclick="playSong('praise-God.mp3','Praise God')">
-    <h3>Praise God</h3>
-    <button class="play-btn">Play</button>
+  <div class="track">
+    <span>Praise God</span>
+    <button onclick="playSong(0)">Play</button>
   </div>
 
-  <div class="track" onclick="playSong('baba-na-you.mp3','Baba Na You')">
-    <h3>Baba Na You</h3>
-    <button class="play-btn">Play</button>
+  <div class="track">
+    <span>Baba Na You</span>
+    <button onclick="playSong(1)">Play</button>
   </div>
 
 </div>
 
+<!-- PLAYER -->
 <div class="player">
-  <div class="player-title" id="nowPlaying">Now Playing: None</div>
-  <audio id="audioPlayer" controls></audio>
-</div>
+  <div class="now" id="nowPlaying">Now Playing: None</div>
 
-<footer>
-  © 2026 Deo Sax Studio
-</footer>
+  <audio id="audio"></audio>
+
+  <div class="controls">
+    <button onclick="prevSong()">⏮</button>
+    <button onclick="togglePlay()">⏯</button>
+    <button onclick="nextSong()">⏭</button>
+    <button onclick="toggleShuffle()">🔀</button>
+    <button onclick="toggleRepeat()">🔁</button>
+  </div>
+</div>
 
 <script>
-function playSong(file, title) {
-  const player = document.getElementById("audioPlayer");
-  const nowPlaying = document.getElementById("nowPlaying");
+const songs = [
+  {title:"Praise God", file:"praise-God.mp3"},
+  {title:"Baba Na You", file:"baba-na-you.mp3"}
+];
 
-  player.src = file;
-  player.play();
-  nowPlaying.innerText = "Now Playing: " + title;
+let current = 0;
+let shuffle = false;
+let repeat = false;
+
+const audio = document.getElementById("audio");
+const nowPlaying = document.getElementById("nowPlaying");
+
+function playSong(index){
+  current = index;
+  audio.src = songs[current].file;
+  audio.play();
+  nowPlaying.innerText = "Now Playing: " + songs[current].title;
 }
+
+function nextSong(){
+  if(shuffle){
+    current = Math.floor(Math.random() * songs.length);
+  } else {
+    current = (current + 1) % songs.length;
+  }
+  playSong(current);
+}
+
+function prevSong(){
+  current = (current - 1 + songs.length) % songs.length;
+  playSong(current);
+}
+
+function togglePlay(){
+  if(audio.paused){
+    audio.play();
+  } else {
+    audio.pause();
+  }
+}
+
+function toggleShuffle(){
+  shuffle = !shuffle;
+  alert("Shuffle: " + shuffle);
+}
+
+function toggleRepeat(){
+  repeat = !repeat;
+  alert("Repeat: " + repeat);
+}
+
+audio.addEventListener("ended", () => {
+  if(repeat){
+    audio.play();
+  } else {
+    nextSong();
+  }
+});
 </script>
 
 </body>
